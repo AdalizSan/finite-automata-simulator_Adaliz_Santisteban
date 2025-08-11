@@ -1,7 +1,7 @@
 Repositorio para la practica no1 de estructuras lógicas 2
  - Simulador de Automatas Finitos - 
    La tarea de este simulador es leer un archivo JSON que contiene la información de automatas
-   como tambien valida que la definición de este este bien en dicho JSON como el alfabeto, los estados, trancisiones, datos y valores.
+   como tambien valida que la definición del archivo este bien como el alfabeto, los estados, trancisiones, datos y valores.
    Si la información del JSON esta bien se genera una imagen con el diagrama por medio de graphviz.
 
    Para poder usar el simulador se necesita:
