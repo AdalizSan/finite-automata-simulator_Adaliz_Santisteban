@@ -1,6 +1,7 @@
 import os
 import json
 from flask import Flask, request, jsonify
+from datetime import datetime
 from graphviz import Digraph
 
 # configuration flask apllication
@@ -98,7 +99,37 @@ class automata:
                 results.append({'input': word, 'result': False, 'error': str(e)})
         return results
 
+    def drawGraph(self):
 
+        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        nameFile = f"imagesAutomata/{self.id}_{date}.png"
+
+        #create the graph
+        drawing = Digraph(format='png')
+        drawing.attr(rankdir='LR')
+
+        #initial arrow
+        drawing.node('inicial', shape='none', label='')
+        drawing.edge('inicial', self.initialState, label='inicial')
+
+        #draw states
+        for state in self.states:
+            if state in self.acceptState:
+                drawing.node(state, shape='doublecircle') #acceptence state
+            else:
+                drawing.node(state, shape='circle') #normal state
+        
+        #draw transitions
+        for state in self.transitions:
+            for letter, next_state in self.transitions[state].items():
+                drawing.edge(state, next_state, label=letter)
+        
+        try:
+            drawing.render(nameFile, view=False)
+            print(f"Graph is ready: {nameFile}.png")
+            return f"{nameFile}.png"
+        except:
+            raise RuntimeError("Error creating the graph image")
 
 
 
