@@ -101,6 +101,7 @@ class automata:
 
     def drawGraph(self):
 
+        os.makedirs('imagesAutomata', exist_ok=True)  
         date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         nameFile = f"imagesAutomata/{self.id}_{date}.png"
 
@@ -110,19 +111,19 @@ class automata:
 
         #initial arrow
         drawing.node('inicial', shape='none', label='')
-        drawing.edge('inicial', self.initialState, label='inicial')
+        drawing.edge('inicial', self.initialState, label='inicial', color='purple')
 
         #draw states
         for state in self.states:
             if state in self.acceptState:
-                drawing.node(state, shape='doublecircle') #acceptence state
+                drawing.node(state, shape='doublecircle', color='purple') #acceptence state
             else:
-                drawing.node(state, shape='circle') #normal state
+                drawing.node(state, shape='circle', color='purple') #normal state
         
         #draw transitions
         for state in self.transitions:
             for letter, next_state in self.transitions[state].items():
-                drawing.edge(state, next_state, label=letter)
+                drawing.edge(state, next_state, label=letter, color='purple')
         
         try:
             drawing.render(nameFile, view=False)
@@ -130,6 +131,39 @@ class automata:
             return f"{nameFile}.png"
         except:
             raise RuntimeError("Error creating the graph image")
+
+@app.route('/process-automata', methods=['POST'])
+def processAutomata():
+    try:
+        data = request.json
+        if not isinstance(data, list):
+            return jsonify({"error": "Invalid input format, must be a array"}), 400
+        
+        results = []
+        for item in data:
+            try:
+                automataInsta = automata(item)
+                automataInsta.checkAll()
+                routeGraph = automataInsta.drawGraph()
+                resultWords = automataInsta.proveWords()
+                results.append({
+                    "id": automataInsta.id,
+                    "success": True,
+                    "inputs_validation": resultWords,
+                    "graph": routeGraph
+                })
+            except Exception as e:
+                results.append({
+                    "id": item.get('id', 'no id'),
+                    "success": False,
+                    "error_description": str(e)
+                })
+        return jsonify(results)
+    except:
+        return jsonify({"error": "An error processing automata graph"}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True) #Run application 
 
 
 
