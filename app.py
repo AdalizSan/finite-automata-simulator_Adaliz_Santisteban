@@ -9,6 +9,11 @@ app = Flask(__name__)
 
 class automata:
     def __init__(self, data): #store data from JSON in the class
+        #Check for required fields
+        required_fields = ['id', 'initial_state', 'acceptance_states', 'alphabet', 'states', 'transitions']
+        for key in required_fields:
+            if key not in required_fields:
+                raise ValueError(f"Missing required key: {key}") 
         self.id = data.get('id', '')
         self.name = data.get('name', '')
         self.initialState = data.get('initial_state', '')
