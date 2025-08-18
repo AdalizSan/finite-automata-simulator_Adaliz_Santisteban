@@ -12,7 +12,7 @@ class automata:
         #Check for required fields
         required_fields = ['id', 'initial_state', 'acceptance_states', 'alphabet', 'states', 'transitions']
         for key in required_fields:
-            if key not in required_fields:
+            if key not in data:
                 raise ValueError(f"Missing required key: {key}") 
         self.id = data.get('id', '')
         self.name = data.get('name', '')
